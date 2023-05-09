@@ -1,21 +1,16 @@
 package person;
-
-
  abstract class Person {
-
-   String Name,Gender,Adress,BirthCountry,Email,Religion,National_ID,Birthdate,phone;
+  private String name,address,birthCountry,national_id,birthDate,phone;
+  char gender;
    
-  public void person(String Name,String National_ID,String Gender,
-          String Birthdate,String Birthcountry,String phone,String Email,String Address,String Religion){
-   this.Name=Name;
-   this.National_ID=National_ID;
-   this.Gender=Gender;
-   this.Birthdate=Birthdate;
-   this.BirthCountry=Birthcountry;
+  public Person(String name,String national_id,char gender,
+          String birthDate,String birthCountry,String phone,String address){
+   this.name=name;
+   this.national_id=national_id;
+   this.gender=gender;
+   this.birthDate=birthDate;
+   this.birthCountry=birthCountry;
    this.phone=phone;
-   this.Email=Email;
-   this.Adress=Address;
-   this.Religion=Religion;
+   this.address=address;
    }
-
 }
