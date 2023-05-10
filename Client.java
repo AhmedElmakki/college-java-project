@@ -9,7 +9,8 @@ public class Client extends Person {
     private static String[] ids = new String[0];
 
     //Instance variables
-    private String  acc_type, password, userName, email;
+    private final String userName;
+    private String  acc_type, password, email;
     private long balance;
     private int acc_no;
     private boolean hasAcc = false;
@@ -17,14 +18,14 @@ public class Client extends Person {
 
     //Constructor
     public Client(String name, String national_id, char gender, String birthDate, String birthCountry, String phone, String userName, String email, String password, String address) {
-        super(name, national_id, gender, birthDate, birthCountry, phone, address);
+        super(name.trim(), national_id.trim(), gender, birthDate, birthCountry.trim(), phone, address.trim());
         this.password = password.trim();
         this.userName = userName.trim();
         this.email=email.trim();
-        emails = addArray(emails, email);
-        userNames = addArray(userNames, userName);
-        passwords = addArray(passwords, password);
-        ids = addArray(ids, national_id);
+        emails = addArray(emails, email.trim());
+        userNames = addArray(userNames, userName.trim());
+        passwords = addArray(passwords, password.trim());
+        ids = addArray(ids, national_id.trim());
     }
 
     //Instance Methods
@@ -116,4 +117,55 @@ public class Client extends Person {
         return false;
     }
 
+    //setters
+    public void setPhone(String num){
+        super.phone = num;
+    }
+    public void setAddress(String line){
+        super.address = line;
+    }
+    public void setEmail(String line){
+        this.email = line;
+    }
+    public void setPassword(String line){
+        this.password = line;
+    }
+
+    //getters
+    public String getPhone(){
+        return super.phone;
+    }
+    public String getName(){
+        return super.name;
+    }
+    public String getID(){
+        return super.national_id;
+    }
+    public char getGender(){
+        return super.gender;
+    }
+    public String getAddress(){
+        return super.address;
+    }
+    public String getBirthDate(){
+        return super.birthDate;
+    }
+    public String getBirthCountry(){
+        return super.birthCountry;
+    }
+    public int getAccNo(){
+        return this.acc_no;
+    }
+    public String getAccType(){
+        return this.acc_type;
+    }
+    public String getUserName(){
+        return this.userName;
+    }
+    public String getEmail(){
+        return this.email;
+    }
+    public String getPassword(){
+        return this.password;
+    }
 }
