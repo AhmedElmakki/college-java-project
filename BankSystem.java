@@ -6,68 +6,71 @@ public class BankSystem {
     public static void main(String[] args){
         Scanner console = new Scanner(System.in);
         //variables
-        Client[] clients = new Client[0];
-        Client client;
         boolean run = true;
         String name, email, userName, password, address, national_id, phone, birthDate, birthCountry, acc_type;
         String username_login, password_login;
         char gender;
         long balance;
+        int response, response_2, response_3;
 
         System.out.println("Welcome to the Banking System");
         while(run){
             System.out.println("Enter 1 for registration\nEnter 2 to Login\nEnter 3 to exit");
             System.out.print("Response: ");
-            int response = console.nextInt();
+            response = console.nextInt();
+
             if(response == 1){
-                System.out.print("Enter your full name: ");
+                System.out.print("Welcome to registration (Enter e to quit)\nEnter your full name: ");
                 console.nextLine();
-                name = console.nextLine();
+                name = console.nextLine().trim();
+                if(name.equals("e")) continue;
                 System.out.print("Enter your email: ");
                 do {
-                    email = console.next();
-                } while(Client.emailExist(email) || !checkInput(email, "email"));
-                System.out.print("Enter your username: ");
+                    email = console.next().trim();
+                } while((Client.emailExist(email) || !checkInput(email, "email")) && !email.equals("e"));
+                if(email.equals("e")) continue;
+                System.out.print("Enter your username: (6 to 18 letters) ");
                 do {
-                    userName = console.next();
-                } while(Client.usernameExist(userName));
+                    console.nextLine();
+                    userName = console.nextLine().trim();
+                } while((!checkInput(userName, "username") || (Client.usernameExist(userName)) && !userName.equals("e")));
+                if(userName.equals("e")) continue;
                 System.out.print("Enter your password: ");
-                password = console.next();
+                password = console.nextLine().trim();
+                if(password.equals("e")) continue;
                 System.out.print("Enter your address: ");
-                console.nextLine();
-                address = console.nextLine();
+                address = console.nextLine().trim();
+                if(address.equals("e")) continue;
                 System.out.print("Enter your national ID: ");
                 do {
-                    national_id = console.next();
-                } while(Client.idExist(national_id) || !checkInput(national_id, "id"));
+                    national_id = console.next().trim();
+                } while((Client.idExist(national_id) || !checkInput(national_id, "id")) && !national_id.equals("e"));
+                if(national_id.equals("e")) continue;
                 System.out.print("Enter your phone: ");
                 do {
-                    phone = console.next();
-                } while(!checkInput(phone, "phone"));
+                    phone = console.next().trim();
+                } while(!checkInput(phone, "phone") && !phone.equals("e"));
+                if(phone.equals("e")) continue;
                 System.out.print("Enter your gender (m/f): ");
                 do {
                     gender = console.next().toLowerCase().charAt(0);
-                } while(!(gender == 'm' || gender == 'f'));
+                } while((!(gender == 'm' || gender == 'f')) && !(gender == 'e'));
+                if(gender =='e') continue;
                 System.out.print("Enter your birth date (YYYY-MM-DD): ");
                 do {
-                    birthDate = console.next();
-                } while(!checkInput(birthDate, "date"));
+                    birthDate = console.next().trim();
+                } while(!checkInput(birthDate, "date") && !birthDate.equals("e"));
+                if(birthDate.equals("e")) continue;
                 System.out.print("Enter your birth country: ");
                 console.nextLine();
-                birthCountry = console.nextLine();
-                System.out.print("Enter your account type (saving, current): ");
-                do {
-                    acc_type = (console.next()).toLowerCase();
-                } while(!(acc_type.equals("saving") || acc_type.equals("current")));
-                System.out.print("Enter your balance: ($) ");
-                balance = console.nextLong();
+                birthCountry = console.nextLine().trim();
+                if(birthCountry.equals("e")) continue;
 
-                client = new Client(name, national_id, gender, birthDate, birthCountry, phone, userName, email, password, address);
-                clients = addClient(clients ,client);
-                System.out.println("\n"+client.openAcc(acc_type, balance)+"\n");
+                new Client(name, national_id, gender, birthDate, birthCountry, phone, userName, email, password, address);
 
             } else if (response == 2){
                 int i=0;
+                Client currentClient = null;
                 boolean logged_in = false, logging = true;
                 while (logging) {
                     System.out.print("Enter your username: (e to exit) ");
@@ -82,8 +85,8 @@ public class BankSystem {
                         logging = false;
                         break;
                     }
-                    for (i = 0; i < clients.length; i++) {
-                        if (clients[i].login(username_login, password_login)) {
+                    for (i = 0; i < Client.getClients().length; i++) {
+                        if (Client.getClients()[i].login(username_login, password_login)) {
                             logged_in = true;
                             break;
                         }
@@ -93,29 +96,52 @@ public class BankSystem {
                         continue;
                     } else{
                         logging = false;
+                        currentClient = Client.getClients()[i];
                         System.out.println("Logged in successfully");
                     }
                 }
                 while(logged_in){
-                    int response_2;
-                    System.out.println("Enter 1 to check balance\nEnter 2 to withdraw money\nEnter 3 to deposit money\nEnter 4 to exit");
-                    System.out.print("Response: ");
-                    response_2 = console.nextInt();
-                    if(response_2==1){
-                        System.out.println(clients[i].checkBalance());
-                    } else if(response_2==2){
-                        System.out.print("How much money you want to withdraw? ($) ");
-                        long amount = console.nextLong();
-                        System.out.println(clients[i].withdraw(amount));
-                    } else if(response_2==3){
-                        System.out.print("How much money you want to deposit? ($) ");
-                        long amount = console.nextLong();
-                        System.out.println(clients[i].deposit(amount));
-                    } else if (response_2==4) {
-                        logged_in = false;
-                    } else{
-                        System.out.println("Error, try again");
+                    Account currentAccount = null;
+                    boolean accountChosen = false;
+                    System.out.println("Choose your account: ");
+                    for(int j=0;j<currentClient.getClientAccounts().length;j++){
+                        System.out.println("Enter "+(j+1)+" for "+currentClient.getClientAccounts()[j]);
                     }
+                    System.out.println("To create new bank account, enter 0");
+                    System.out.println("To exit, enter -1");
+                    System.out.print("Response: ");
+                    response_2 = console.nextInt() -1;
+
+                    if(response_2 < currentClient.getClientAccounts().length && response_2 >= 0){
+                        accountChosen = true;
+                        currentAccount = currentClient.getClientAccounts()[response_2];
+                        while(accountChosen){
+                            System.out.println("Enter 1 to check balance\nEnter 2 to withdraw\nEnter 3 to deposit\nEnter 4 to exit");
+                            System.out.print("Response: ");
+                            response_3 = console.nextInt();
+                            if(response_3 == 1) System.out.println(currentAccount.checkBalance());
+                            else if(response_3 == 2){
+                                System.out.print("How much you want to withdraw? ($) ");
+                                long amount = console.nextLong();
+                                System.out.println(currentAccount.withdraw(amount));
+                            } else if (response_3 == 3){
+                                System.out.print("How much you want to deposit? ($) ");
+                                long amount = console.nextLong();
+                                System.out.println(currentAccount.deposit(amount));
+                            } else if (response_3 == 4) accountChosen = false;
+                             else System.out.println("Error, please try again");
+
+                        }
+                    } else if (response_2 == -1) {
+                        System.out.print("Enter your account type (saving, current): ");
+                        do {
+                            acc_type = (console.next()).toLowerCase();
+                        } while(!(acc_type.equals("saving") || acc_type.equals("current")));
+                        System.out.print("Enter your balance: ($) ");
+                        balance = console.nextLong();
+                        System.out.println(currentClient.openAcc(acc_type, balance));
+                    } else if (response_2 == -2) logged_in = false;
+                     else System.out.println("Error, please try again");
                 }
 
             }else if(response == 3){
@@ -125,14 +151,6 @@ public class BankSystem {
                 System.out.println("Incorrect input, try again!");
             }
         }
-    }
-    public static Client[] addClient(Client[] array, Client object){
-        Client[] temp = new Client[array.length+1];
-        for(int i=0;i<array.length;i++){
-            temp[i] = array[i];
-        }
-        temp[array.length] = object;
-        return temp;
     }
     public static boolean checkInput(String line, String type){
         if(type.equals("date")) {
@@ -145,6 +163,10 @@ public class BankSystem {
             return matcher.find();
         } else if(type.equals("phone")){
             Pattern pattern = Pattern.compile("^01(0|1|2|5)\\d{8}$");
+            Matcher matcher = pattern.matcher(line);
+            return matcher.find();
+        } else if (type.equals("username")) {
+            Pattern pattern = Pattern.compile("^\\S{6,18}$");
             Matcher matcher = pattern.matcher(line);
             return matcher.find();
         } else {

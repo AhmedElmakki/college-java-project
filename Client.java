@@ -2,19 +2,16 @@ package person;
 import java.util.Random;
 public class Client extends Person {
     //Class variables
-    private static int[] acc_nos = new int[0];
+    private static Client[] clients = new Client[0];
     private static String[] emails = new String[0];
     private static String[] passwords = new String[0];
     private static String[] userNames = new String[0];
     private static String[] ids = new String[0];
 
     //Instance variables
+    private Account[] clientAccounts = new Account[0];
     private final String userName;
-    private String  acc_type, password, email;
-    private long balance;
-    private int acc_no;
-    private boolean hasAcc = false;
-    Random r = new Random();
+    private String password, email;
 
     //Constructor
     public Client(String name, String national_id, char gender, String birthDate, String birthCountry, String phone, String userName, String email, String password, String address) {
@@ -26,51 +23,23 @@ public class Client extends Person {
         userNames = addArray(userNames, userName.trim());
         passwords = addArray(passwords, password.trim());
         ids = addArray(ids, national_id.trim());
+        addClient(clients, this);
     }
 
+    public String toString(){
+        return "Bank client with id "+this.national_id;
+    }
     //Instance Methods
-    public String openAcc(String acc_type, long balance){
-        if(!hasAcc){
-
-            this.acc_type = acc_type;
-            this.balance = balance;
-            do {
-                this.acc_no = r.nextInt(10000000, 100000000);
-            } while (acc_noExist(this.acc_no));
-            acc_nos = addArray(acc_nos, acc_no);
-            hasAcc = true;
-            return "You've opened new bank account Successfully\nYour account type is "+this.acc_type+",\nYour account number is "+this.acc_no;
-        } else {
-            return "You already have an account!";
-        }
-    }
-    public String withdraw(long amount){
-        if(hasAcc){
-            if(amount > balance){
-                return "Not enough money in your Account";
-            } else{
-                balance -= amount;
-                return "You withdrew "+amount+"$ Successfully";
-            }
-        } else {
-            return "You don't have Account";
-        }
-    }
-    public String deposit(long amount){
-        if(hasAcc){
-            balance += amount;
-            return "You deposited "+amount+"$ in your Account Successfully";
-        } else{
-            return "You don't have Account";
-        }
-    }
-    public String checkBalance(){
-        return "Your Account's balance is "+balance+"$";
-    }
-
     public boolean login(String userName_input, String password_input){
         if(this.userName.equals(userName_input) && this.password.equals(password_input)) return true;
         else return false;
+    }
+
+    public String openAcc(String acc_type, long balance){
+        Account account = new Account(acc_type, balance);
+        addAccount(clientAccounts, account);
+        return "You've opened new "+acc_type+" bank account Successfully";
+
     }
 
     // Private Methods
@@ -82,13 +51,22 @@ public class Client extends Person {
         temp[array.length] = line;
         return temp;
     }
-    private int[] addArray(int[] array, int num){
-        int[] temp = new int[array.length+1];
+
+    private void addAccount(Account[] array, Account line){
+        Account[] temp = new Account[array.length+1];
         for(int i=0;i<array.length;i++){
             temp[i] = array[i];
         }
-        temp[array.length] = num;
-        return temp;
+        temp[array.length] = line;
+        this.clientAccounts = temp;
+    }
+    private void addClient(Client[] array, Client line){
+        Client[] temp = new Client[array.length+1];
+        for(int i=0;i<array.length;i++){
+            temp[i] = array[i];
+        }
+        temp[array.length] = line;
+        clients = temp;
     }
 
     //Class Methods
@@ -107,12 +85,6 @@ public class Client extends Person {
     public static boolean idExist(String line){
         for(int i=0;i<ids.length;i++){
             if(ids[i].equals(line.trim())) return true;
-        }
-        return false;
-    }
-    public static boolean acc_noExist(int num){
-        for(int i=0;i<acc_nos.length;i++){
-            if(acc_nos[i] == num) return true;
         }
         return false;
     }
@@ -153,12 +125,6 @@ public class Client extends Person {
     public String getBirthCountry(){
         return super.birthCountry;
     }
-    public int getAccNo(){
-        return this.acc_no;
-    }
-    public String getAccType(){
-        return this.acc_type;
-    }
     public String getUserName(){
         return this.userName;
     }
@@ -167,5 +133,11 @@ public class Client extends Person {
     }
     public String getPassword(){
         return this.password;
+    }
+    public static Client[] getClients(){
+        return clients;
+    }
+    public Account[] getClientAccounts(){
+        return this.clientAccounts;
     }
 }
