@@ -27,12 +27,14 @@ public class BankSystem {
                 System.out.print("Enter your email: ");
                 do {
                     email = console.next().trim();
+                    if((!checkInput(email, "email")) && !email.equals("e")){System.out.println("Invalid Email");}
                 } while((Client.emailExist(email) || !checkInput(email, "email")) && !email.equals("e"));
                 if(email.equals("e")) continue;
                 System.out.print("Enter your username: (6 to 18 letters) ");
                 do {
                     console.nextLine();
                     userName = console.nextLine().trim();
+                    if(!checkInput(userName, "username") ){System.out.println("username is too short or too long");}
                 } while((!checkInput(userName, "username") || (Client.usernameExist(userName)) && !userName.equals("e")));
                 if(userName.equals("e")) continue;
                 System.out.print("Enter your password: ");
@@ -41,14 +43,16 @@ public class BankSystem {
                 System.out.print("Enter your address: ");
                 address = console.nextLine().trim();
                 if(address.equals("e")) continue;
-                System.out.print("Enter your national ID: ");
+                System.out.print("Enter your national ID: (23*************) :");
                 do {
                     national_id = console.next().trim();
+                    if((!checkInput(national_id, "id")) && !national_id.equals("e")){System.out.println("Invalid ID");}
                 } while((Client.idExist(national_id) || !checkInput(national_id, "id")) && !national_id.equals("e"));
                 if(national_id.equals("e")) continue;
                 System.out.print("Enter your phone: ");
                 do {
                     phone = console.next().trim();
+                    if((!checkInput(phone, "phone") && !phone.equals("e"))){System.out.println("Invalid phone number");}
                 } while(!checkInput(phone, "phone") && !phone.equals("e"));
                 if(phone.equals("e")) continue;
                 System.out.print("Enter your gender (m/f): ");
@@ -59,6 +63,7 @@ public class BankSystem {
                 System.out.print("Enter your birth date (YYYY-MM-DD): ");
                 do {
                     birthDate = console.next().trim();
+                    if(!checkInput(birthDate, "date") && !birthDate.equals("e")){System.out.println("Invalid Date");}
                 } while(!checkInput(birthDate, "date") && !birthDate.equals("e"));
                 if(birthDate.equals("e")) continue;
                 System.out.print("Enter your birth country: ");
@@ -162,7 +167,7 @@ public class BankSystem {
             Matcher matcher = pattern.matcher(line);
             return matcher.find();
         } else if(type.equals("phone")){
-            Pattern pattern = Pattern.compile("^01(0|1|2|5)\\d{8}$");
+            Pattern pattern = Pattern.compile("^01(0|1|2|5)\\d{7}$");
             Matcher matcher = pattern.matcher(line);
             return matcher.find();
         } else if (type.equals("username")) {
